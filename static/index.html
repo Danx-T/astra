@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astra — AI Agent Platform</title>
+    <meta name="description" content="Astra: LLM + Tools + Skills + Memory mimarisine sahip AI agent platformu">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================================
+           Astra — Modern Dark Chat UI
+           Glassmorphism + Gradient aksanlar + Micro-animations
+           ============================================================ */
+
+        :root {
+            /* Renk Paleti */
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a2e;
+            --bg-glass: rgba(255, 255, 255, 0.03);
+            --bg-glass-hover: rgba(255, 255, 255, 0.06);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --border-glass-active: rgba(255, 255, 255, 0.15);
+
+            --text-primary: #e8e8ed;
+            --text-secondary: #8e8ea0;
+            --text-muted: #5a5a6e;
+
+            --accent-primary: #7c5cfc;
+            --accent-secondary: #a78bfa;
+            --accent-glow: rgba(124, 92, 252, 0.3);
+
+            --gradient-primary: linear-gradient(135deg, #7c5cfc 0%, #a78bfa 50%, #c084fc 100%);
+            --gradient-bg: linear-gradient(180deg, #0a0a0f 0%, #12121a 100%);
+            --gradient-shine: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.03) 50%, transparent 100%);
+
+            --user-bubble: rgba(124, 92, 252, 0.12);
+            --user-bubble-border: rgba(124, 92, 252, 0.25);
+            --assistant-bubble: rgba(255, 255, 255, 0.04);
+            --assistant-bubble-border: rgba(255, 255, 255, 0.08);
+
+            --tool-bg: rgba(251, 191, 36, 0.08);
+            --tool-border: rgba(251, 191, 36, 0.2);
+            --tool-text: #fbbf24;
+
+            --success: #34d399;
+            --error: #f87171;
+            --warning: #fbbf24;
+
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 20px var(--accent-glow);
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient-bg);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ---------- Layout ---------- */
+        .app {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* ---------- Sidebar ---------- */
+        .sidebar {
+            width: 280px;
+            min-width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition-base);
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-version {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-left: auto;
+            background: var(--bg-glass);
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border-glass);
+        }
+
+        .new-chat-btn {
+            width: 100%;
+            padding: 10px 16px;
+            background: var(--bg-glass);
+            border: 1px dashed var(--border-glass-active);
+            border-radius: var(--radius-md);
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .new-chat-btn:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+        }
+
+        .conversation-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .conversation-list::-webkit-scrollbar { width: 4px; }
+        .conversation-list::-webkit-scrollbar-track { background: transparent; }
+        .conversation-list::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 2px; }
+
+        .conv-item {
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            margin-bottom: 2px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conv-item:hover { background: var(--bg-glass-hover); color: var(--text-primary); }
+        .conv-item.active {
+            background: rgba(124, 92, 252, 0.1);
+            color: var(--text-primary);
+            border-left: 2px solid var(--accent-primary);
+        }
+
+        .sidebar-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-glass);
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ---------- Main Content ---------- */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            position: relative;
+        }
+
+        /* Header */
+        .chat-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-glass);
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .chat-header h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 8px rgba(52, 211, 153, 0.5);
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Messages Area */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            scroll-behavior: smooth;
+        }
+
+        .messages-container::-webkit-scrollbar { width: 6px; }
+        .messages-container::-webkit-scrollbar-track { background: transparent; }
+        .messages-container::-webkit-scrollbar-thumb { background: var(--border-glass); border-radius: 3px; }
+        .messages-container::-webkit-scrollbar-thumb:hover { background: var(--border-glass-active); }
+
+        /* Welcome Screen */
+        .welcome {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .welcome-icon {
+            width: 72px;
+            height: 72px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-glow), var(--shadow-lg);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 480px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .suggestions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 560px;
+        }
+
+        .suggestion-card {
+            padding: 14px 16px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            text-align: left;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .suggestion-card:hover {
+            background: var(--bg-glass-hover);
+            border-color: var(--accent-primary);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .suggestion-card .emoji {
+            margin-bottom: 6px;
+            display: block;
+            font-size: 18px;
+        }
+
+        /* Message Bubbles */
+        .message {
+            margin-bottom: 20px;
+            animation: slideUp 0.3s ease-out;
+            max-width: 780px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .message-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .message.user .message-avatar {
+            background: var(--gradient-primary);
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-glass);
+        }
+
+        .message-content {
+            padding: 14px 18px;
+            border-radius: var(--radius-lg);
+            line-height: 1.65;
+            font-size: 14px;
+        }
+
+        .message.user .message-content {
+            background: var(--user-bubble);
+            border: 1px solid var(--user-bubble-border);
+        }
+
+        .message.assistant .message-content {
+            background: var(--assistant-bubble);
+            border: 1px solid var(--assistant-bubble-border);
+        }
+
+        /* Markdown Styles in Messages */
+        .message-content p { margin-bottom: 8px; }
+        .message-content p:last-child { margin-bottom: 0; }
+
+        .message-content strong { font-weight: 600; color: var(--text-primary); }
+        .message-content em { font-style: italic; color: var(--text-secondary); }
+
+        .message-content code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12.5px;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .message-content pre {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .message-content pre code {
+            background: none;
+            border: none;
+            padding: 0;
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+        .message-content ul, .message-content ol {
+            margin: 8px 0;
+            padding-left: 20px;
+        }
+
+        .message-content li { margin-bottom: 4px; }
+
+        .message-content a {
+            color: var(--accent-secondary);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color var(--transition-fast);
+        }
+        .message-content a:hover { border-bottom-color: var(--accent-secondary); }
+
+        /* Tool Call Indicator */
+        .tool-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: var(--tool-bg);
+            border: 1px solid var(--tool-border);
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            color: var(--tool-text);
+            font-weight: 500;
+            margin-bottom: 10px;
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .tool-indicator.completed {
+            animation: none;
+            background: rgba(52, 211, 153, 0.08);
+            border-color: rgba(52, 211, 153, 0.2);
+            color: var(--success);
+        }
+
+        /* Loading / Thinking */
+        .thinking {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 18px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        .thinking-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .thinking-dots span {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .thinking-dots span:nth-child(2) { animation-delay: 0.16s; }
+        .thinking-dots span:nth-child(3) { animation-delay: 0.32s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ---------- Input Area ---------- */
+        .input-area {
+            padding: 16px 24px 24px;
+            background: linear-gradient(180deg, transparent 0%, var(--bg-primary) 30%);
+        }
+
+        .input-wrapper {
+            max-width: 780px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .input-box {
+            display: flex;
+            align-items: flex-end;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-lg);
+            padding: 4px;
+            transition: all var(--transition-fast);
+        }
+
+        .input-box:focus-within {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(124, 92, 252, 0.1), var(--shadow-md);
+        }
+
+        .input-box textarea {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            padding: 10px 14px;
+            resize: none;
+            max-height: 150px;
+            line-height: 1.5;
+        }
+
+        .input-box textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: var(--radius-md);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .send-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .input-hint {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .messages-container { padding: 16px; }
+            .input-area { padding: 12px 16px 16px; }
+            .suggestions { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <div class="logo-icon">✦</div>
+                    <span class="logo-text">Astra</span>
+                    <span class="logo-version">v0.1</span>
+                </div>
+                <button class="new-chat-btn" id="newChatBtn" onclick="startNewChat()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Yeni Konuşma
+                </button>
+            </div>
+            <div class="conversation-list" id="convList"></div>
+            <div class="sidebar-footer">
+                Astra AI Agent Platform — MVP
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="main">
+            <header class="chat-header">
+                <div class="status-dot"></div>
+                <h2 id="chatTitle">Astra</h2>
+            </header>
+
+            <div class="messages-container" id="messagesContainer">
+                <!-- Welcome screen (gösterilir: henüz mesaj yoksa) -->
+                <div class="welcome" id="welcomeScreen">
+                    <div class="welcome-icon">✦</div>
+                    <h1>Astra'ya Hoş Geldin</h1>
+                    <p>Hesaplama yapabilir, dosya okuyup yazabilir, web araması yapabilir ve daha fazlasını sizin için gerçekleştirebilirim.</p>
+                    <div class="suggestions">
+                        <div class="suggestion-card" onclick="sendSuggestion('125 * 8 + 17 kaç eder?')">
+                            <span class="emoji">🧮</span>
+                            125 × 8 + 17 kaç eder?
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('workspace klasörüne hello.txt diye bir dosya oluştur, içine Merhaba Dünya yaz')">
+                            <span class="emoji">📝</span>
+                            Workspace'e dosya oluştur
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Python FastAPI nedir? Kısa bir araştırma yap.')">
+                            <span class="emoji">🔍</span>
+                            Web araması yap
+                        </div>
+                        <div class="suggestion-card" onclick="sendSuggestion('Coding helper skill\'ini yükle ve bir Python fonksiyonu yazmama yardım et')">
+                            <span class="emoji">💻</span>
+                            Coding skill'ini kullan
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <div class="input-box">
+                        <textarea
+                            id="messageInput"
+                            placeholder="Mesajınızı yazın..."
+                            rows="1"
+                            onkeydown="handleKeyDown(event)"
+                            oninput="autoResize(this)"
+                        ></textarea>
+                        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"/>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="input-hint">Enter ile gönder • Shift+Enter ile yeni satır</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ============================================================
+        // Astra — Chat UI JavaScript
+        // ============================================================
+
+        const API_BASE = '';  // Aynı origin (FastAPI serve ediyor)
+
+        let currentConversationId = null;
+        let isLoading = false;
+
+        // --- Başlangıç ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadConversations();
+            // localStorage'dan son conversation'ı yükle
+            const lastConvId = localStorage.getItem('astra_current_conv');
+            if (lastConvId) {
+                loadConversation(lastConvId);
+            }
+            // Input değişikliğini dinle
+            document.getElementById('messageInput').addEventListener('input', () => {
+                const btn = document.getElementById('sendBtn');
+                btn.disabled = !document.getElementById('messageInput').value.trim();
+            });
+        });
+
+        // --- Conversation Yönetimi ---
+        async function loadConversations() {
+            try {
+                const res = await fetch(`${API_BASE}/conversations`);
+                const convs = await res.json();
+                renderConversationList(convs);
+            } catch (e) {
+                console.error('Conversation listesi yüklenemedi:', e);
+            }
+        }
+
+        function renderConversationList(convs) {
+            const list = document.getElementById('convList');
+            list.innerHTML = '';
+            convs.forEach(c => {
+                const div = document.createElement('div');
+                div.className = `conv-item ${c.id === currentConversationId ? 'active' : ''}`;
+                div.textContent = c.title || 'Yeni Konuşma';
+                div.onclick = () => loadConversation(c.id);
+                list.appendChild(div);
+            });
+        }
+
+        async function startNewChat() {
+            try {
+                const res = await fetch(`${API_BASE}/conversations`, { method: 'POST' });
+                const conv = await res.json();
+                currentConversationId = conv.id;
+                localStorage.setItem('astra_current_conv', conv.id);
+                document.getElementById('chatTitle').textContent = 'Yeni Konuşma';
+                clearMessages();
+                showWelcome(true);
+                loadConversations();
+            } catch (e) {
+                console.error('Yeni konuşma oluşturulamadı:', e);
+            }
+        }
+
+        async function loadConversation(convId) {
+            currentConversationId = convId;
+            localStorage.setItem('astra_current_conv', convId);
+
+            try {
+                const res = await fetch(`${API_BASE}/conversations/${convId}/messages`);
+                const data = await res.json();
+                clearMessages();
+
+                const msgs = data.messages || [];
+                if (msgs.length === 0) {
+                    showWelcome(true);
+                } else {
+                    showWelcome(false);
+                    msgs.forEach(m => {
+                        if (m.role === 'user') {
+                            appendMessage('user', m.content);
+                        } else if (m.role === 'assistant' && m.content) {
+                            appendMessage('assistant', m.content);
+                        } else if (m.role === 'tool') {
+                            // Tool mesajlarını gösterme (iç detay)
+                        }
+                    });
+                }
+
+                loadConversations();
+            } catch (e) {
+                console.error('Mesaj geçmişi yüklenemedi:', e);
+            }
+        }
+
+        // --- Mesaj Gönderme ---
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || isLoading) return;
+
+            // Conversation yoksa oluştur
+            if (!currentConversationId) {
+                try {
+                    const res = await fetch(`${API_BASE}/conversations`, { method: 'POST' });
+                    const conv = await res.json();
+                    currentConversationId = conv.id;
+                    localStorage.setItem('astra_current_conv', conv.id);
+                } catch (e) {
+                    console.error('Conversation oluşturulamadı:', e);
+                    return;
+                }
+            }
+
+            // UI güncelle
+            showWelcome(false);
+            appendMessage('user', text);
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('sendBtn').disabled = true;
+
+            // Loading göster
+            isLoading = true;
+            const thinkingEl = showThinking();
+
+            try {
+                const res = await fetch(
+                    `${API_BASE}/conversations/${currentConversationId}/message`,
+                    {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: text }),
+                    }
+                );
+
+                const data = await res.json();
+
+                // Thinking'i kaldır
+                removeThinking(thinkingEl);
+
+                // Tool çağrıları varsa göster
+                if (data.tool_calls_made && data.tool_calls_made.length > 0) {
+                    data.tool_calls_made.forEach(tc => {
+                        appendToolIndicator(tc.tool, tc.result);
+                    });
+                }
+
+                // Yanıtı göster
+                appendMessage('assistant', data.response);
+
+                // Conversation listesini güncelle
+                loadConversations();
+
+            } catch (e) {
+                removeThinking(thinkingEl);
+                appendMessage('assistant', '⚠️ Bir hata oluştu. Lütfen tekrar deneyin.');
+                console.error('Mesaj gönderilemedi:', e);
+            } finally {
+                isLoading = false;
+            }
+        }
+
+        function sendSuggestion(text) {
+            document.getElementById('messageInput').value = text;
+            document.getElementById('sendBtn').disabled = false;
+            sendMessage();
+        }
+
+        // --- UI Yardımcıları ---
+        function appendMessage(role, content) {
+            const container = document.getElementById('messagesContainer');
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${role}`;
+
+            const header = document.createElement('div');
+            header.className = 'message-header';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = role === 'user' ? '👤' : '✦';
+
+            const label = document.createElement('span');
+            label.textContent = role === 'user' ? 'Sen' : 'Astra';
+
+            header.appendChild(avatar);
+            header.appendChild(label);
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = renderMarkdown(content || '');
+
+            msgDiv.appendChild(header);
+            msgDiv.appendChild(contentDiv);
+            container.appendChild(msgDiv);
+            scrollToBottom();
+        }
+
+        function appendToolIndicator(toolName, result) {
+            const container = document.getElementById('messagesContainer');
+            const div = document.createElement('div');
+            div.className = 'message assistant';
+            div.innerHTML = `
+                <div class="tool-indicator completed">
+                    🔧 <strong>${escapeHtml(toolName)}</strong> tool'u kullanıldı
+                </div>
+            `;
+            container.appendChild(div);
+            scrollToBottom();
+        }
+
+        function showThinking() {
+            const container = document.getElementById('messagesContainer');
+            const div = document.createElement('div');
+            div.className = 'message assistant';
+            div.id = 'thinking-msg';
+            div.innerHTML = `
+                <div class="message-header">
+                    <div class="message-avatar" style="background: var(--bg-tertiary); border: 1px solid var(--border-glass);">✦</div>
+                    <span>Astra</span>
+                </div>
+                <div class="thinking">
+                    <div class="thinking-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    Düşünüyorum...
+                </div>
+            `;
+            container.appendChild(div);
+            scrollToBottom();
+            return div;
+        }
+
+        function removeThinking(el) {
+            if (el && el.parentNode) {
+                el.parentNode.removeChild(el);
+            }
+        }
+
+        function clearMessages() {
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = '';
+        }
+
+        function showWelcome(show) {
+            // Welcome ekranı varsa göster/gizle; yoksa oluştur
+            let welcome = document.getElementById('welcomeScreen');
+            if (show) {
+                if (!welcome) {
+                    const container = document.getElementById('messagesContainer');
+                    container.innerHTML = `
+                        <div class="welcome" id="welcomeScreen">
+                            <div class="welcome-icon">✦</div>
+                            <h1>Astra'ya Hoş Geldin</h1>
+                            <p>Hesaplama yapabilir, dosya okuyup yazabilir, web araması yapabilir ve daha fazlasını sizin için gerçekleştirebilirim.</p>
+                            <div class="suggestions">
+                                <div class="suggestion-card" onclick="sendSuggestion('125 * 8 + 17 kaç eder?')">
+                                    <span class="emoji">🧮</span> 125 × 8 + 17 kaç eder?
+                                </div>
+                                <div class="suggestion-card" onclick="sendSuggestion('workspace klasörüne hello.txt diye bir dosya oluştur, içine Merhaba Dünya yaz')">
+                                    <span class="emoji">📝</span> Workspace'e dosya oluştur
+                                </div>
+                                <div class="suggestion-card" onclick="sendSuggestion('Python FastAPI nedir? Kısa bir araştırma yap.')">
+                                    <span class="emoji">🔍</span> Web araması yap
+                                </div>
+                                <div class="suggestion-card" onclick="sendSuggestion(\`Coding helper skill'ini yükle ve bir Python fonksiyonu yazmama yardım et\`)">
+                                    <span class="emoji">💻</span> Coding skill'ini kullan
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } else {
+                if (welcome) welcome.remove();
+            }
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById('messagesContainer');
+            setTimeout(() => {
+                container.scrollTop = container.scrollHeight;
+            }, 50);
+        }
+
+        // --- Markdown Basit Render ---
+        function renderMarkdown(text) {
+            if (!text) return '';
+            let html = escapeHtml(text);
+
+            // Code blocks (```)
+            html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_, lang, code) => {
+                return `<pre><code>${code.trim()}</code></pre>`;
+            });
+
+            // Inline code
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+            // Bold
+            html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+            // Italic
+            html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+
+            // Links
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+            // Unordered list
+            html = html.replace(/^[\s]*[-*]\s+(.+)$/gm, '<li>$1</li>');
+            html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+            // Deduplicate nested <ul>
+            html = html.replace(/<\/ul>\s*<ul>/g, '');
+
+            // Ordered list
+            html = html.replace(/^\d+\.\s+(.+)$/gm, '<li>$1</li>');
+
+            // Line breaks → paragraphs
+            html = html.replace(/\n\n/g, '</p><p>');
+            html = html.replace(/\n/g, '<br>');
+            html = `<p>${html}</p>`;
+
+            // Temizlik
+            html = html.replace(/<p><\/p>/g, '');
+            html = html.replace(/<p>(<pre>)/g, '$1');
+            html = html.replace(/(<\/pre>)<\/p>/g, '$1');
+            html = html.replace(/<p>(<ul>)/g, '$1');
+            html = html.replace(/(<\/ul>)<\/p>/g, '$1');
+
+            return html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // --- Input Yardımcıları ---
+        function handleKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!isLoading && document.getElementById('messageInput').value.trim()) {
+                    sendMessage();
+                }
+            }
+        }
+
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+        }
+    </script>
+</body>
+</html>
