@@ -4,6 +4,7 @@ Tüm ayarlar .env dosyasından okunur; hardcode değer kullanılmaz.
 """
 
 import os
+import logging
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -31,4 +32,13 @@ WORKSPACE_DIR.mkdir(parents=True, exist_ok=True)
 DATABASE_URL: str = f"sqlite:///{BASE_DIR / 'agent.db'}"
 
 # --- Skills dizini ---
+# Her skill skills/<skill_name>/SKILL.md formatında bulunur
 SKILLS_DIR: Path = BASE_DIR / "skills"
+
+# --- Başlangıç kontrolü ---
+_logger = logging.getLogger(__name__)
+if not GROQ_API_KEY:
+    _logger.warning(
+        "⚠️ GROQ_API_KEY ayarlanmamış! "
+        ".env dosyasında GROQ_API_KEY=gsk_... şeklinde tanımlayın."
+    )

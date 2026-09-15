@@ -7,7 +7,6 @@ Agent loop bu fonksiyonlar üzerinden mesaj geçmişini kaydet/oku yapar.
 import json
 import logging
 import uuid
-from datetime import datetime, timezone
 from memory.models import SessionLocal, Conversation, Message
 
 logger = logging.getLogger(__name__)
@@ -76,7 +75,7 @@ def save_message(
             content=content,
             tool_calls=json.dumps(tool_calls) if tool_calls else None,
             tool_call_id=tool_call_id,
-            created_at=datetime.now(timezone.utc),
+            # created_at SQLAlchemy model default ile otomatik atanır
         )
         session.add(msg)
         session.commit()

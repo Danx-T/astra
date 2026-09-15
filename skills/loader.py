@@ -95,14 +95,14 @@ def get_skill_summaries() -> str:
         "Belirtilen skill'in detaylı talimatlarını yükler. "
         "Skill talimatları, o alanda nasıl çalışılacağına dair "
         "best practice ve adım adım yönergeler içerir. "
-        "Mevcut skill'ler: 'research' (araştırma), 'coding_helper' (kod yazma/inceleme)."
+        "Mevcut skill'leri görmek için list_skills tool'unu kullan."
     ),
     parameters={
         "type": "object",
         "properties": {
             "name": {
                 "type": "string",
-                "description": "Yüklenecek skill'in adı (örn: 'research', 'coding_helper')",
+                "description": "Yüklenecek skill'in adı (list_skills ile listelenebilir)",
             }
         },
         "required": ["name"],

@@ -38,6 +38,15 @@ async def lifespan(app: FastAPI):
     import tools.calculator  # noqa: F401
     import tools.file_ops    # noqa: F401
     import tools.web_search  # noqa: F401
+    import tools.data_ops    # noqa: F401
+    import tools.web_ops     # noqa: F401
+    import tools.pdf_extract # noqa: F401
+    import tools.code_ops    # noqa: F401
+    import tools.http_request # noqa: F401
+    import tools.chart_generate # noqa: F401
+    import tools.agent_ops   # noqa: F401
+    import tools.text_ops    # noqa: F401
+    import tools.utility     # noqa: F401
     logger.info("Tool'lar yüklendi")
 
     # Skill'leri yükle
@@ -144,13 +153,14 @@ async def send_message(conversation_id: str, request: MessageRequest):
     """
     from memory.store import get_conversation, update_conversation_title
     from agent.loop import run_agent
+    import asyncio
 
     conv = get_conversation(conversation_id)
     if not conv:
         raise HTTPException(status_code=404, detail="Conversation bulunamadı")
 
-    # Agent loop'u çalıştır
-    result = run_agent(conversation_id, request.message)
+    # Agent loop senkron — ayrı thread'de çalıştır (event loop'u bloklamaz)
+    result = await asyncio.to_thread(run_agent, conversation_id, request.message)
 
     # İlk mesajda conversation başlığını güncelle
     if conv.get("title") == "Yeni Konuşma":
