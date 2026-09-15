@@ -93,8 +93,15 @@ def run_agent(conversation_id: str, user_message: str) -> dict:
     for iteration in range(1, MAX_AGENT_ITERATIONS + 1):
         logger.info(f"--- İterasyon {iteration}/{MAX_AGENT_ITERATIONS} ---")
 
+        # Sliding window: system mesajı + son 8 mesajı tut (token tasarrufu)
+        MAX_HISTORY_MESSAGES = 8
+        if len(messages) > MAX_HISTORY_MESSAGES + 1:
+            windowed = [messages[0]] + messages[-(MAX_HISTORY_MESSAGES):]
+        else:
+            windowed = messages
+
         # LLM'i çağır
-        llm_response = call_llm(messages, tools=tools if tools else None)
+        llm_response = call_llm(windowed, tools=tools if tools else None)
 
         # Tool call var mı kontrol et
         if llm_response.get("tool_calls"):
@@ -126,16 +133,22 @@ def run_agent(conversation_id: str, user_message: str) -> dict:
                 logger.info(f"✅ Tool sonucu ({func_name}): {str(result)[:200]}")
 
                 # Tool sonucunu history'ye ve DB'ye ekle
+                # Büyük tool sonuçlarını kırp (token limitini aşmamak için)
+                MAX_TOOL_RESULT = 1500
+                truncated_result = (
+                    result[:MAX_TOOL_RESULT] + f"\n[...kısaltıldı, toplam {len(result)} karakter]"
+                    if len(result) > MAX_TOOL_RESULT else result
+                )
                 tool_msg = {
                     "role": "tool",
-                    "content": result,
+                    "content": truncated_result,
                     "tool_call_id": tc_id,
                 }
                 messages.append(tool_msg)
                 save_message(
                     conversation_id,
                     role="tool",
-                    content=result,
+                    content=result,  # DB'ye tam haliyle kaydet
                     tool_call_id=tc_id,
                 )
 

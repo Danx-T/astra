@@ -32,7 +32,7 @@ def web_search(query: str) -> str:
         from ddgs import DDGS
 
         with DDGS() as ddgs:
-            results = ddgs.text(query, max_results=5)
+            results = ddgs.text(query, max_results=3)
 
         if not results:
             return f"'{query}' için sonuç bulunamadı."
@@ -42,7 +42,7 @@ def web_search(query: str) -> str:
         for i, r in enumerate(results, 1):
             title = r.get("title", "Başlık yok")
             url = r.get("href", r.get("link", "URL yok"))
-            body = r.get("body", r.get("snippet", "Açıklama yok"))
+            body = r.get("body", r.get("snippet", "Açıklama yok"))[:300]  # Body'yi kırp
             output_parts.append(f"{i}. **{title}**\n   URL: {url}\n   {body}\n")
 
         return "\n".join(output_parts)

@@ -55,7 +55,7 @@ def _html_to_text(html: str) -> str:
         "required": ["url"],
     },
 )
-def web_fetch(url: str, max_chars: int = 5000) -> str:
+def web_fetch(url: str, max_chars: int = 2000) -> str:
     """URL içeriğini çeker ve temiz metin olarak döndürür."""
     try:
         import httpx

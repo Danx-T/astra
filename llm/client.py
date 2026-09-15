@@ -5,6 +5,7 @@ Tool calling (function calling) formatını destekler.
 Hata yönetimi: API hatası, rate limit, timeout yakalanır.
 """
 
+import json
 import logging
 from openai import OpenAI, APIError, RateLimitError, APITimeoutError, APIConnectionError
 from config import GROQ_API_KEY, GROQ_BASE_URL, LLM_MODEL, LLM_TEMPERATURE, LLM_MAX_TOKENS
@@ -53,7 +54,9 @@ def call_llm(messages: list[dict], tools: list[dict] | None = None) -> dict:
 
         logger.info(f"LLM çağrısı yapılıyor — model: {LLM_MODEL}, mesaj sayısı: {len(messages)}")
 
-        response = _client.chat.completions.create(**kwargs)
+        # Ham HTTP yanıtını al (Gemini'nin thought_signature gibi özel alanlarını korumak için)
+        raw = _client.chat.completions.with_raw_response.create(**kwargs)
+        response = raw.parse()
         choice = response.choices[0]
         message = choice.message
 
@@ -66,13 +69,20 @@ def call_llm(messages: list[dict], tools: list[dict] | None = None) -> dict:
 
         # Tool call'lar varsa ekle
         if message.tool_calls:
-            result["tool_calls"] = [
+            # Ham JSON'dan al — thought_signature gibi özel alanları korur
+            raw_json = json.loads(raw.text)
+            raw_tool_calls = (
+                raw_json.get("choices", [{}])[0]
+                .get("message", {})
+                .get("tool_calls", [])
+            )
+            result["tool_calls"] = raw_tool_calls or [
                 {
                     "id": tc.id,
                     "type": "function",
                     "function": {
                         "name": tc.function.name,
-                        "arguments": tc.function.arguments,  # JSON string
+                        "arguments": tc.function.arguments,
                     },
                 }
                 for tc in message.tool_calls
